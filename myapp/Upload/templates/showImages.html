@@ -1,11 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>de</h1>
-</body>
-</html>
+{% extends 'Home.html' %}
+{% load static %}
+
+{% block title %}Style Scan - Show images{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'showImages.css' %}">
+<section>
+     <div class="img">
+      {% if images %}
+        <h2>Generated T-shirt Design:</h2>
+        <div class="images-container">
+          {% for image in images %}
+            <img src="{{ image.userImage.url }}" alt="Generated T-shirt Design" class="generated-image" />
+          {% endfor %}
+        </div>
+      {% else %}
+        <h2>Upload an image to see the generated T-shirt design.</h2>
+      {% endif %}
+    </div>
+</section>
+
+{% endblock %}

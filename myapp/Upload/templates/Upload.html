@@ -19,17 +19,11 @@
       <input type="file" name="userImage" accept="image/*" required />
       <button type="submit">Upload and Analyze</button>
     </form>
-    <!-- <div class="img">
-      {% if images %}
-        <h2>Generated T-shirt Design:</h2>
-        <div class="images-container">
-          {% for image in images %}
-            <img src="{{ image.userImage.url }}" alt="Generated T-shirt Design" class="generated-image" />
-          {% endfor %}
-        </div>
-      {% else %}
-        <h2>Upload an image to see the generated T-shirt design.</h2>
+    <div class="form-footer">
+      {% if submit %}
+        <div class="loading-spinner"></div>
       {% endif %}
-    </div> -->
+    </div>
+   
   </section>
 {% endblock %}
