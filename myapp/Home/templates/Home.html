@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>  {% block title %}Style Scan - Redefine Your Look{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'Home.css' %}">
+</head>
+<body>
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">Style Scan</div>
+      <nav class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'upload_image' %}">Try It</a>
+        <a href="{% url 'feature_image' %}">Features</a>
+        <a href="{% url 'contactDetails' %}">Contact</a>
+      </nav>
+    </div>
+  </header>
+      {% block content %}
+      <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Redefine Your Style <br> with <span>AI Precision</span></h1>
+        <p>Upload your photo and get personalized outfit and eyewear suggestions. Powered by intelligent algorithms. Styled by inspiration.</p>
+        <a href="{% url 'upload_image' %}" class="btn">Try Style Scan Now</a>
+      </div>
+      <div class="hero-image">
+        <div class="image-wrapper">
+          <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=450&q=80" alt="User wearing glasses" />
+          <div class="image-label">AI Preview: Glasses Matched</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="feature-card">
+      <h3 class="highlight-purple">AI-Powered Styling</h3>
+      <p>Harness computer vision to identify your perfect look based on your face and tone.</p>
+    </div>
+    <div class="feature-card">
+      <h3 class="highlight-pink">Smart Outfit Matching</h3>
+      <p>Get curated suggestions for fashion that fits your body and vibe — instantly.</p>
+    </div>
+    <div class="feature-card">
+      <h3 class="highlight-yellow">Virtual Eyewear Try-On</h3>
+      <p>Preview glasses tailored to your face shape, from classy to bold.</p>
+    </div>
+  </section>
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <h3>Let’s Style Together</h3>
+    <p>Reach out for collaborations or feedback — <a href="mailto:info@stylescan.ai">info@stylescan.ai</a></p>
+    <a href="mailto:info@stylescan.ai" class="btn contact-btn">Contact Us</a>
+  </section>
+      {% endblock %}
+  <!-- Footer -->
+  <footer class="footer">
+    &copy; 2025 <span class="highlight-purple">Style Scan</span>. All rights reserved.
+  </footer>
+</body>
+</html>

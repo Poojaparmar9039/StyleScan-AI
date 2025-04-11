@@ -1,0 +1,83 @@
+/* Contact page styling */
+
+.main-section {
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .main-section p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1rem;
+    max-width: 600px;
+  }
+  
+  .contact-email {
+    margin: 1.5rem 0;
+  }
+  
+  .contact-email a {
+    color: #7b68ee;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .contact-email a:hover {
+    color: #6a5acd;
+    text-decoration: underline;
+  }
+  
+  .btn {
+    display: inline-block;
+    background-color: #7b68ee;
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    box-shadow: 0 4px 6px rgba(123, 104, 238, 0.2);
+  }
+  
+  .btn:hover {
+    background-color: #6a5acd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(123, 104, 238, 0.3);
+  }
+  
+  .btn:active {
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 768px) {
+    .main-section {
+      padding: 3rem 1.5rem;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+    }
+    
+    .contact-email a {
+      font-size: 1.1rem;
+    }
+  }

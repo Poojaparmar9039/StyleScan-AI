@@ -1,0 +1,29 @@
+{% extends 'Home.html' %}
+{% load static %}
+
+{% block title %}Style Scan - Features{% endblock %}
+
+
+
+
+{% block content %}
+<!-- Features Content -->
+<link rel="stylesheet" href="{% static 'Features.css' %}">
+<main class="main-section">
+  <h1 class="section-title">Explore Our Features</h1>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h2>AI-Powered Styling</h2>
+      <p>Smart facial analysis for personalized clothing suggestions based on your unique features. Our advanced AI algorithms identify your face shape, skin tone, and personal style to recommend outfits that perfectly complement your appearance.</p>
+    </div>
+    <div class="feature-card">
+      <h2>Glasses Matcher</h2>
+      <p>Find frames that enhance your face shape using AI precision. Our technology analyzes your facial structure to recommend eyewear styles that perfectly balance your features, ensuring you look your absolute best with every pair.</p>
+    </div>
+    <div class="feature-card">
+      <h2>Virtual Preview</h2>
+      <p>Preview how outfits and glasses look before you try them for real. Our real-time visualization technology lets you see exactly how different styles will appear on you, saving time and eliminating uncertainty from your fashion choices.</p>
+    </div>
+  </div>
+</main>
+{% endblock %}  

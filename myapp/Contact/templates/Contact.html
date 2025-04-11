@@ -1,0 +1,15 @@
+{% extends 'Home.html' %}
+{% load static %}
+{% block title %}Contact Us{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Contact.css' %}">
+
+  <!-- Contact Info -->
+  <main class="main-section text-center">
+    <h1 class="section-title">Let’s Style Together</h1>
+    <p>For any queries, feedback, or collaborations — drop us a message!</p>
+    <p class="contact-email"><a href="mailto:info@stylescan.ai">info@stylescan.ai</a></p>
+    <a href="mailto:info@stylescan.ai" class="btn">Email Us</a>
+  </main>
+
+{% endblock %}
