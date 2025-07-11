@@ -1,16 +1,20 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 import numpy as np
 import cv2
 import PIL.Image
 import google.generativeai as genai
 from huggingface_hub import InferenceClient
-from . models import Upload
+from .models import Upload
 from django.core.files import File
 import os
 from uuid import uuid4
 import random
 
 
+
+genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+hf_token = os.getenv("HF_TOKEN")
+image_client = InferenceClient("stabilityai/stable-diffusion-3-medium-diffusers", token=hf_token)
 
 
 def is_human_face(uploaded_file):
@@ -23,106 +27,94 @@ def is_human_face(uploaded_file):
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
     return len(faces) > 0
 
+
 def upload_image(request):
     if request.method == 'POST':
-        userImage = request.FILES.get('userImage')
-        if userImage:
-            print("📷 Uploaded Image:", userImage)
-            result = is_human_face(userImage)
-            if result:
-                print("✅ Human face detected!")
-                userImage.seek(0)
-                return our_image(userImage)
+        gender = request.POST.get('gender')
+        style_type = request.POST.get('styleType')  # "Clothes" or "Glasses"
+        clothing_category = request.POST.get('clothingCategory')  # may be None
+        user_image = request.FILES.get('userImage')
+
+        if user_image and is_human_face(user_image):
+            user_image.seek(0)
+            if style_type == "Clothes":
+                return generate_clothes_images(user_image, gender, clothing_category)
+            elif style_type == "Glasses":
+                return generate_glasses_images(user_image, gender)
             else:
-                print(" No human face detected.")
+                print("Invalid style type selected.")
+        else:
+            print("No face detected or invalid image.")
+            # return render(request, 'Upload.html', {'message': 'No face detected or invalid image.'})
     return render(request, 'Upload.html')
 
 
-
-def our_image(userImage):
-    image = PIL.Image.open(userImage)
+def generate_clothes_images(user_image, gender, category):
+    image = PIL.Image.open(user_image)
     model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
 
     for _ in range(2):
         response = model.generate_content([
-            "Analyze the uploaded image to detect the person's gender and skin tone. "
-            "Based on this analysis, generate a unique prompt for an LLM to create a clothing design that suits the person. "
-            "The design should match the person's gender and have a color that complements their skin tone. "
-            "Do not repeat colors or styles across different prompts. "
-            "The clothing type should vary—choose randomly from modern streetwear, traditional attire, casual outfits, formal wear, suits, or other fashion categories. "
-            "Include details about the person's features if relevant and a line that emphasizes exploring new colors. "
-            "The final generated image should only include the clothing item—do not include any human or background. "
-            "Return only the prompt for image generation, with no extra explanation.",
+            f"Analyze the uploaded image to detect the person's gender and skin tone.",
+            f"Generate a unique clothing design prompt for an image generation model.",
+            f"Ensure the clothing matches {gender} style and fits into the '{category}' category.",
+            f"Use colors that complement the person's skin tone and avoid repeating past styles.",
+            f"Do not include any human or background — only the clothing item.",
             image
         ])
-
         generated_prompt = response.text.strip()
-        print("🧠 Generated Prompt:", generated_prompt)
+        print("🧥 Clothing Prompt:", generated_prompt)
         image_generation(generated_prompt)
 
     return redirect('display_image')
 
 
+def generate_glasses_images(user_image, gender):
+    image = PIL.Image.open(user_image)
+    model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
+
+    
+    style_keywords = [
+        "retro style", "futuristic", "bold frames", "minimalist", "luxury brand style",
+        "colorful acetate", "transparent frames", "aviator style", "round vintage", "fashion-forward design"
+    ]
+
+    for _ in range(2):
+        random_style = random.choice(style_keywords)
+
+        response = model.generate_content([
+            f"Analyze the uploaded image to detect the person's skin tone and face shape.",
+            f"Generate a unique glasses design prompt for an image generation model.",
+            f"The glasses should match {gender} fashion and suit the detected face shape and skin tone.",
+            f"Use a {random_style} in the design.",
+            f"Only generate the glasses on a transparent or plain background — do not include a human face.",
+            image
+        ])
+        generated_prompt = response.text.strip()
+        print("🕶️ Glasses Prompt:", generated_prompt)
+        image_generation(generated_prompt)
+
+    return redirect('display_image')
+
+
+
 def image_generation(prompt):
-    styles = [
-        "in a modern streetwear style",
-        "with a minimalistic design",
-        "in a vibrant graphic tee style",
-        "with a vintage 90s pattern",
-        "featuring abstract shapes",
-        "with artistic brushstroke textures",
-        "traditional wares",
-        "with a nature-inspired theme",
-        "inspired by pop culture",
-        "with a retro vibe",
-        "colourful tops",
-        "ballon pattern tops"
-        "full office wear suit",
-        "featuring a futuristic techwear look",
-        "with a bold print",
-        "in a casual oversized fit"
-    ]
-    colors=[
-        "red",
-        "blue",
-        "green",
-        "yellow",
-        "purple",
-        "pink",
-        "orange",
-        "black",
-        "white",
-        "grey",
-        "brown",
-        "beige",
-        "teal",
-        "navy blue",
-        "maroon"
-        "turquoise",
-        "lavender",
-        "coral"
-    ]
-    style_hint = random.choice(styles)   
-    color=random.choice(colors)
-    varied_prompt = f"{prompt} The costume should be {style_hint} and of {color}."
-    generated_image = image_client.text_to_image(varied_prompt)
+    generated_image = image_client.text_to_image(prompt)
     unique_filename = f"generatedimage_{uuid4().hex}.png"
     path = os.path.join("media/uploads", unique_filename)
     generated_image.save(path, format="PNG")
-    
+
     with open(path, "rb") as f:
         django_file = File(f)
         Upload.objects.create(userImage=django_file)
 
-    # return redirect('display_image')
-    return redirect('display_image')
-
 
 def display_image(request):
-    images = Upload.objects.all().order_by('-created_at')  
+    images = Upload.objects.all().order_by('-created_at')[:2]
     return render(request, 'showImages.html', {'images': images})
 
+
 def see_image(request):
-    images =Upload.objects.all()
-    images=random.choices(images, k=10)
+    images = Upload.objects.all()
+    images = random.choices(images, k=10)
     return render(request, 'showImages.html', {'images': images})
