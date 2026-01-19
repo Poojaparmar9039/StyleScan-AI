@@ -7,17 +7,18 @@
 <link rel="stylesheet" href="{% static 'Upload.css' %}">
 <section>
   <h1 class="section-title">Try Style Scan</h1>
-  <!-- {% if message %}
-  <p class="text-center" style="color: red;" ><b>{{ message }}</b></p>
-  {% endif %} -->
-  <p class="text-center">Upload your photo to get personalized style suggestions.</p>
 
+ 
+  {% if message %}
+    <p class="text-center" style="color: red; font-weight: bold;">{{ message }}</p>
+  {% endif %}
+
+  <p class="text-center">Upload your photo to get personalized style suggestions.</p>
 
   <form class="upload-form" action="{% url 'upload_image' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-
-    <!-- Gender Selection -->
+ 
     <div class="form-group">
       <label><input type="radio" name="gender" value="Male" id="gender-male" checked> Male</label>
       <label><input type="radio" name="gender" value="Female" id="gender-female"> Female</label>
@@ -34,7 +35,6 @@
       </select>
     </div>
 
-    <!-- Clothing Categories (Shown only if Clothes is selected) -->
     <div class="form-group" id="clothingCategoryGroup" style="display:none;">
       <label for="clothingCategory">Choose Clothing Style:</label>
       <select name="clothingCategory" id="clothingCategory">
@@ -57,7 +57,6 @@
     <button type="submit">Upload and Analyze</button>
   </form>
 
-  <!-- Loading Spinner -->
   <div class="form-footer">
     {% if submit %}
       <div class="loading-spinner"></div>
